@@ -1,4 +1,0 @@
-﻿  main.cpp
-E:\github_repo\simulate_life\simulate_life\main.cpp(85,25): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-E:\github_repo\simulate_life\simulate_life\main.cpp(86,29): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-  simulate_life.vcxproj -> E:\github_repo\simulate_life\x64\Debug\simulate_life.exe
