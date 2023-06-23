@@ -29,8 +29,8 @@ float rand_float(void)
 
 void random_grid(void)
 {
-    size_t w = WIDTH / 4;
-    size_t h = HEIGHT / 4;
+    size_t w = WIDTH / 3;
+    size_t h = HEIGHT / 3;
     for (size_t dy = 0; dy < h; ++dy)
     {
         for (size_t dx = 0; dx < w; ++dx)
@@ -140,6 +140,7 @@ int main()
 
     for (;;)
     {
+        std::cout << "SIMULATION OF LIFE \n\n";
         display_grid(grid);
         for (size_t y = 0; y < HEIGHT; ++y)
         {
