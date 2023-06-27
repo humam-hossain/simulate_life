@@ -1,7 +1,7 @@
 #version 330
 
 // input vertex attributes (from vertex shader)
-in vec2 fragTexCood;
+in vec2 fragTexCoord;
 in vec4 fragColor;
 
 // input uniform values
@@ -15,5 +15,5 @@ out vec4 finalColor;
 
 void main()
 {
-    finalColor = texture(texture0, fragTexCood) * vec4(0,1,0,1);
+   finalColor = texture(texture0, fragTexCoord) * vec4(0,1,0,1);
 }
