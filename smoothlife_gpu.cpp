@@ -1,5 +1,5 @@
 #include <iostream>
-#include "raylib.h"
+#include <raylib.h>
 
 int main() {
 	int screen_width = 800;
