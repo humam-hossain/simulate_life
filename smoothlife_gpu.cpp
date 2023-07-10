@@ -1,30 +1,41 @@
 #include <iostream>
-#include <raylib.h>
+#include "raylib.h"
 
-int main(void)
-{
-    int screen_width = 1000;
-    int screen_height = 800;
-    InitWindow(screen_width, screen_height, "SmoothLife");
-    SetTargetFPS(60);
+int main() {
+	int screen_width = 800;
+	int screen_height = 600;
+	InitWindow(screen_width, screen_height, "SmoothLife");
+	SetTargetFPS(60);
 
-    Image image = GenImagePerlinNoise(screen_width, screen_width, 0, 0, 5.0f);
-    // Image image = GenImageWhiteNoise(screen_width, screen_height, 0.8f);
-    RenderTexture2D texture = LoadRenderTexture(screen_width, screen_height);
-    UpdateTexture(texture.texture, image.data);
+	// Image image = GenImagePerlinNoise(screen_width, screen_height, 0, 0, 5.0f);
+	Image image = GenImageCellular(screen_width, screen_height, screen_height/6);
+	
+	RenderTexture2D state[2];
+	state[0] = LoadRenderTexture(screen_width, screen_height);
+	state[1] = LoadRenderTexture(screen_width, screen_height);
+	UpdateTexture(state[0].texture, image.data);
 
-    Shader shader = LoadShader(NULL, "./smoothlife.fs");
+	Shader shader = LoadShader(NULL, "./smoothlife.fs");
 
-    while(!WindowShouldClose()){
-        BeginDrawing();
-            ClearBackground(BLACK);
-            BeginShaderMode(shader);
-                DrawTexture(texture.texture, 0, 0, BLUE);
-            EndShaderMode();
-        EndDrawing();
-    }
+	size_t i = 0;
 
-    CloseWindow();
+	while (!WindowShouldClose()) {
+		BeginTextureMode(state[1 - i]);
+			ClearBackground(BLACK);
+			BeginShaderMode(shader);
+				DrawTexture(state[i].texture, 0, 0, BLUE);
+			EndShaderMode();
+		EndTextureMode();
+		
+		BeginDrawing();
+			ClearBackground(BLACK);
+			DrawTexture(state[1 - i].texture, 0, 0, BLUE);
+		EndDrawing();
 
-    return 0;
+		i = 1 - i;
+	}
+
+	CloseWindow(); 
+
+	return 0;
 }
