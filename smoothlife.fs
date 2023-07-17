@@ -11,14 +11,14 @@ out vec4 finalColor;
 uniform vec2 resolution;
 
 // global values
-float ra = 11;
-float alpha = 0.028;
-// float alpha = 0.147;
+float ra = 15;
+float alpha_n = 0.028;
+float alpha_m = 0.147;
 float b1 = 0.278;
 float b2 = 0.365;
 float d1 = 0.267;
 float d2 = 0.445;
-float dt = 0.01;
+float dt = 1.0;
 
 #define PI 3.14159265359
 
@@ -28,24 +28,24 @@ float dt = 0.01;
 //     return (a % b + b) % b;
 // }
 
-float sigma1(float x, float a)
+float sigma(float x, float a, float alpha)
 {
-    return 1.0 / (1.0 + exp(-(x - a) * 4 / alpha));
+    return 1.0 / (1.0 + exp(-(x - a) * 4.0/alpha));
 }
 
-float sigma2(float x, float a, float b)
+float sigma_n(float x, float a, float b)
 {
-    return sigma1(x, a) * (1 - sigma1(x, b));
+    return sigma(x, a, alpha_n) * (1 - sigma(x, b, alpha_n));
 }
 
-float sigmam(float x, float y, float m)
+float sigma_m(float x, float y, float m)
 {
-    return x * (1 - sigma1(m, 0.5)) + y * sigma1(m, 0.5);
+    return x * (1 - sigma(m, 0.5, alpha_m)) + y * sigma(m, 0.5, alpha_m);
 }
 
 float s(float n, float m)
 {
-    return sigma2(n, sigmam(b1, d1, m), sigmam(b2, d2, m));
+    return sigma_n(n, sigma_m(b1, d1, m), sigma_m(b2, d2, m));
 }
 
 float grid(float x, float y){
@@ -61,15 +61,15 @@ void main() {
 	float cx = fragTexCoord.x * resolution.x;
 	float cy = (1 - fragTexCoord.y) * resolution.y;
 
-	float ri = ra / 3;
+	float ri = ra / 3.0;
 	float m = 0; 
 	float M = PI * ri * ri;
 	float n = 0; 
 	float N = PI * ra * ra;
 
 
-	for (float dy = -(ra - 1); dy < ra; dy += 1.0){
-		for (float dx = -(ra - 1); dx < ra; dx += 1.0){
+	for (float dy = -ra; dy < ra; dy += 1.0){
+		for (float dx = -ra; dx < ra; dx += 1.0){
 			// int y = emod(cy + dy, int(resolution.x));
 			// int x = emod(cx + dx, int(resolution.y));
 
@@ -91,8 +91,8 @@ void main() {
 	n /= N;
 
 	float q = s(n, m);
-	float diff = 2 * q - 1;
-	float v = grid(cx, cy) + dt*diff;
+	float diff = 2.0*q-1.0;
+	float v = clamp(grid(cx, cy) + dt*diff, 0.0, 1.0);
 #endif
 
 	// finalColor = texture(texture0, fragTexCoord)*vec4(0,0.95,0,1);
